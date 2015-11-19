@@ -3,8 +3,8 @@ using System.Collections;
 using System;
 
 public class PointPickup : TriggeredAction {
-    public int value;
-    public bool destroyOnPickup;
+    public int value = 10;
+    public bool destroyOnPickup = true;
 
 	// Use this for initialization
 	void Start () {
@@ -16,7 +16,7 @@ public class PointPickup : TriggeredAction {
 	
 	}
 
-    public override void onTriggerEnter(PlayerStats stats)
+    public override void onTriggerEnter(PlayerStats stats, ControllerGame controllerGame)
     {
         stats.addScore(value);
         if(destroyOnPickup == true)
