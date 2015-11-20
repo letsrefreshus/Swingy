@@ -81,12 +81,12 @@ public class ControllerGame : MonoBehaviour
                     _attachmentPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                     _attachmentDistance = Vector2.Distance(_attachmentPoint, objPlayer.transform.localPosition);
                     Debug.Log("Attachment Point : " + _attachmentPoint);
-                    SpringJoint2D joint = objPlayer.AddComponent<SpringJoint2D>();
+                    DistanceJoint2D joint = objPlayer.AddComponent<DistanceJoint2D>();
                     joint.anchor = new Vector2();
                     joint.connectedAnchor = _attachmentPoint;
                     joint.distance = _attachmentDistance;
                     joint.enableCollision = true;
-                    joint.frequency = 0.75f;
+                    joint.maxDistanceOnly = true;
 
                     _objAttachmentPoint = (GameObject)Instantiate(prefabAttachmentPoint, _attachmentPoint, Quaternion.identity);
                     Vector3 scale = new Vector3(3f, 3f, 3f);
@@ -120,7 +120,7 @@ public class ControllerGame : MonoBehaviour
 #endif
                 {
                     Debug.Log("Unclick");
-                    Destroy(objPlayer.GetComponent<SpringJoint2D>());
+                    Destroy(objPlayer.GetComponent<DistanceJoint2D>());
                     Destroy(_objAttachmentPoint);
                     Destroy(_objAttachmentLine);
                 }
