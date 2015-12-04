@@ -20,8 +20,7 @@ public class TeleportationZone : TriggeredAction
     //Overrides
     public override void onTriggerEnter(PlayerStats stats, ControllerGame controllerGame)
     {
-        controllerGame.removeHookshot();
-        controllerGame.disonnectRope();
+        controllerGame.disconnectRope();
         controllerGame.movePlayerToGameObject(destination);
     }
 

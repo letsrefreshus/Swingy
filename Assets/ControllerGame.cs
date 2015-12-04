@@ -5,6 +5,8 @@ using System;
 
 public class ControllerGame : MonoBehaviour
 {
+    public static float MAX_ROPE_WIDTH = 3f;
+
     //Editor Member Variables
     public GameObject objPlayer;
     public GameObject prefabAttachmentPoint;
@@ -15,6 +17,7 @@ public class ControllerGame : MonoBehaviour
     public GameObject objGameUI;
     public GameObject objTotalTime;
     public GameObject objFinalScore;
+
     public GameObject objWinLose;
 
     //Private Member Variables
@@ -110,7 +113,7 @@ public class ControllerGame : MonoBehaviour
                     //Update the size of the attachment line.
                     float oneToXScale = 1f;
                     float newDistance = Vector3.Distance(_objAttachmentPoint.transform.position, objPlayer.transform.position);
-                    Vector3 newScale = new Vector3(newDistance * (1f / oneToXScale), _attachmentDistance / newDistance, 1f);
+                    Vector3 newScale = new Vector3(newDistance * (1f / oneToXScale), Math.Min(_attachmentDistance / newDistance, MAX_ROPE_WIDTH), 1f);
                     _objAttachmentLine.transform.localScale = newScale;
                 }
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -120,9 +123,7 @@ public class ControllerGame : MonoBehaviour
 #endif
                 {
                     Debug.Log("Unclick");
-                    Destroy(objPlayer.GetComponent<DistanceJoint2D>());
-                    Destroy(_objAttachmentPoint);
-                    Destroy(_objAttachmentLine);
+                    disconnectRope();
                 }
 #if UNITY_ANDROID && !UNITY_EDITOR
             }
@@ -131,7 +132,17 @@ public class ControllerGame : MonoBehaviour
             updateScoreUI();    //The fast to code way...
         }
     }
-    
+
+    public void disconnectRope()
+    {
+        if (objPlayer.GetComponent<DistanceJoint2D>() != null)
+            Destroy(objPlayer.GetComponent<DistanceJoint2D>());
+        if (_objAttachmentLine)
+            Destroy(_objAttachmentLine);
+        if (_objAttachmentPoint)
+            Destroy(_objAttachmentPoint);
+    }
+
     public void addScore(int amount)
     {
         _playerStats.addScore(amount);
@@ -169,5 +180,25 @@ public class ControllerGame : MonoBehaviour
     public void endGame()
     {
         Application.LoadLevel("Start");
+    }
+
+    public bool isGameActive()
+    {
+        return _gameActive;
+    }
+
+    public void applyForceToPlayer(Vector2 force)
+    {
+        _rigidbodyPlayer.AddForce(force);
+    }
+
+    public Vector3 getPlayerPosition()
+    {
+        return objPlayer.transform.localPosition;
+    }
+
+    public void movePlayerToGameObject(GameObject target)
+    {
+        objPlayer.transform.localPosition = target.transform.localPosition;
     }
 }
